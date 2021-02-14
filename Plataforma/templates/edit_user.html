@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block style %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+{% endblock %}
+{% block title %}Editar {{ user.username }}{% endblock %}
+{% block content %}
+
+<main class="form-signin">
+    <h2>Editar usuario:</h2>
+    <form method="post" id="form">
+        {{ form.csrf_token }}
+
+        <label for="username">Username:</label>
+        {{ form.username(class="form-control", readonly=True) }}
+        <label for="nombre">Nombre:</label>
+        {{ form.nombre(class="form-control", autofocus=True) }}
+        <label for="apelido">Apellido:</label>
+        {{ form.apellidos(class="form-control") }}
+        <label for="email">E-mail:</label>
+        {{ form.email(class="form-control") }}
+
+        <p id="cCont"><a href="{{ url_for('cambiar_pass', id=user.id) }}">Cambiar password</a></p>
+
+        {{ form.guardar(class="w-100 btn btn-lg btn-primary") }}
+
+        <a id="regresar" href="{{ url_for('users') }}" class="btn btn-secondary">regresar</a>
+    </form>
+</main>
+
+
+<script src="{{ url_for('static', filename='js/edit_user.js') }}"></script>
+
+{% endblock %}

@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}Nuevo usuario{% endblock %}
+{% block style %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+{% endblock %}
+{% block content %}
+<main class="form-signin">
+    <h2>Nuevo usuario:</h2>
+    <form method="post" id="form">
+        {{ form.csrf_token }}
+
+        {% for errors in form.errors.items() %}
+        <div class="alert alert-danger">
+            {{ errors[1][0] }}
+        </div>
+        {% endfor %}
+
+        <label for="username" id="flag1">Username:</label>
+        {{ form.username(class="form-control", autofocus=True) }}
+        <label for="contrasena">Contraseña:</label>
+        {{ form.contrasena(class="form-control") }}
+        <label for="cont">Repita la contraseña:</label>
+        {{ form.cont(class="form-control") }}
+        <label for="nombre" id="flag2">Nombre:</label>
+        {{ form.nombre(class="form-control") }}
+        <label for="apellido">Apellido:</label>
+        {{ form.apellidos(class="form-control") }}
+        <label for="email">E-mail:</label>
+        {{ form.email(class="form-control") }}
+
+        {{ form.enviar(class="w-100 btn btn-lg btn-primary") }}
+    </form>
+</main>
+
+<script src="{{ url_for('static', filename='js/new_user.js') }}"></script>
+{% endblock %}

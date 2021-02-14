@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+</head>
+
+<body>
+    <main class="form-signin">
+        <form method="POST">
+            {{ form.csrf_token }}
+            <h1 class="h3 mb-3 fw-normal">Login:</h1>
+
+            {% for errors in form.errors.items() %}
+            <div class="alert alert-danger">
+                {{ errors[1][0] }}
+            </div>
+            {% endfor %}
+
+            {{ form.username(class="form-control", placeholder="Username") }}
+            {{ form.password(class="form-control", placeholder="Password") }}
+            {{ form.enviar(class="w-100 btn btn-lg btn-primary", type="submit") }}
+        </form>
+    </main>
+
+</body>
+
+</html>

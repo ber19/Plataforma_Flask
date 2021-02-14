@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block style %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+{% endblock %}
+{% block title %}{{ user.username }}{% endblock %}
+{% block content %}
+<main class="form-signin">
+    <form method="post" id="form">
+        {{ form.csrf_token }}
+
+        {% if msg %}
+        <div class="alert alert-success">
+            {{ msg }}
+        </div>
+        {% endif %}
+        <label for="username" id="flag1">Username:</label>
+        {{ form.username(class="form-control", readonly=True, value=user.username) }}
+        <label for="contrasena">Nueva contraseña:</label>
+        {{ form.contrasena(class="form-control", autofocus=True) }}
+        <label for="cont">Repita la contraseña:</label>
+        {{ form.cont(class="form-control") }}
+
+        {{ form.guardar(class="w-100 btn btn-lg btn-primary") }}
+
+        <a id="regresar" href="{{ url_for('editar_user', id=user.id) }}" class="btn btn-secondary">regresar</a>
+    </form>
+</main>
+
+<script src="{{ url_for('static', filename='js/camb_cont.js') }}"></script>
+{% endblock %}

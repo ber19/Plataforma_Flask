@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% block title %}Usuarios{% endblock %}
+{% block style %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/users.css') }}">
+{% endblock %}
+{% block content %}
+<div class="container-fluid" id="main">
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th scope="col">Username</th>
+                <th scope="col">admin</th>
+                <th scope="col">Nombre</th>
+                <th scope="col">Apellidos</th>
+                <th scope="col">e-mail</th>
+                <th scope="col">Creación</th>
+                <th scope="col"> Creado por</th>
+                <th scope="col"><img src="{{ url_for('static', filename='icons/pencil-square.svg') }}" width="21"
+                        height="21" title="Editar"></th>
+                <th scope="col"><img src="{{ url_for('static', filename='icons/trash.svg') }}" width="21" height="21"
+                        title="Eliminar"></th>
+                <th scope="col"><img src="{{ url_for('static', filename='icons/list-check.svg') }}" width="21"
+                        height="21" title="Actividades"></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+            <tr>
+                <td>{{ user.username }}</td>
+                <td>{{ user.admin }}</td>
+                <td>{{ user.nombre }}</td>
+                <td>{{ user.apellidos }}</td>
+                <td>{{ user.email }}</td>
+                <td>{{ user.creacion }}</td>
+                <td>{{ user.creado_por }}</td>
+                {% if current_user == user or not user.admin %}
+                <td><a href="/edit_user/{{ user.id }}">Editar</a></td>
+                {% else %}
+                <td></td>
+                {% endif %}
+                {% if not user.admin == True %}
+                <td><a href="#">Eliminar</a></td>
+                {#<td><a href="{% url 'deleteUserView' user.id %}">Eliminar</a></td>#}
+                <td><a href="#">Actividades</a></td>
+                {#<td><a href="{% url 'activsUserView' user.id %}">Actividades</a></td>#}
+                {% else %}
+                <td></td>
+                <td></td>
+                {% endif %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
