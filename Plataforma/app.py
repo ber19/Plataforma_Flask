@@ -201,7 +201,10 @@ def actividades_user(id):
     from Plataforma.models import Actividad, Usuarios
     if current_user.is_admin() or str(current_user.id) == id:
         user1 = Usuarios.query.get(id)
-        activs1 = Actividad.query.filter_by(user_id=id)
+        if user1 == None:
+            abort(404)
+        else:
+            activs1 = Actividad.query.filter_by(user_id=id)
     else:
         abort(404)
     return render_template("activs_user.html", activs=activs1, user=user1)
