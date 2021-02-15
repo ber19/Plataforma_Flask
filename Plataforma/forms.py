@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, \
-    TextAreaField, SelectField, PasswordField
+    TextAreaField, SelectField, PasswordField, DateTimeField
 from wtforms.fields.html5 import EmailField
 from flask_wtf.file import FileField, FileRequired
 from wtforms.validators import Required
@@ -19,3 +19,14 @@ class NuevoUserForm(FlaskForm):
     email = EmailField("E-mail:", validators=[Required()])
     enviar = SubmitField("Registrar")
     guardar = SubmitField("Guardar")
+
+class ConfirmForm(FlaskForm):
+    si = SubmitField("Si")
+    no = SubmitField("No")
+
+class NewActividadForm(FlaskForm):
+    activ = SelectField("Actividad:", coerce=str)
+    comentarios = TextAreaField("Observaciones:")
+    arch = FileField("Archivo:", validators=[FileRequired()])
+    creacion = DateTimeField("Creación:", format="%d-%m-%Y_%H-%M-%S")
+    enviar = SubmitField("Guardar")

@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block style %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+{% endblock %}
+{% block title %}Eliminar {{ user.username }}{% endblock %}
+{% block content %}
+<main class="form-signin">
+    <form method="post" id="form">
+        {{ form.csrf_token }}
+
+        <h3>Confirmar eliminacion de:</h3>
+        <p style="text-align: center;">{{ user.username }}</p>
+        <div style="text-align: center;">
+            {{ form.si(class="btn btn-primary", id="boton") }}
+            {#<button id="boton" class="btn btn-primary" type="submit" name="respuesta"
+                value="cancelar">Cancelar</button>#}
+            {{ form.no(class="btn btn-primary", id="boton") }}
+            {#<button id="boton" class="btn btn-primary" type="submit" name="respuesta"
+                value="aceptar">Aceptar</button>#}
+        </div>
+        <br>
+        <a id="regresar" href="/users" class="btn btn-secondary">regresar</a>
+    </form>
+</main>
+{% endblock %}

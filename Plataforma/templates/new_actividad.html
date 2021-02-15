@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block style %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+{% endblock %}
+{% block title %}Nueva actividad{% endblock %}
+{% block content %}
+<main class="form-signin">
+    <h2>Nueva actividad:</h2>
+    <form method="post" id="form" enctype="multipart/form-data">
+        {{ form.csrf_token }}
+
+        <label for="creacion">Fecha de creacion:</label>
+        {{ form.creacion(class="form-control", readonly=True, value=creacion) }}
+        <label for="actividad">Actividad:</label>
+        {{ form.activ(class="form-control", autofocus=True) }}
+        <label for="comentario">Comentario:</label>
+        {{ form.comentarios(class="form-control") }}
+        <label for="archivo" id="flag">Fecha de creacion:</label>
+        {{ form.arch(class="form-control") }}
+
+        {{ form.enviar(class="w-100 btn btn-lg btn-primary") }}
+    </form>
+</main>
+
+<script src="{{ url_for('static', filename='js/new_actividad.js') }}"></script>
+{% endblock %}

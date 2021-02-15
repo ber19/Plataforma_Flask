@@ -39,10 +39,8 @@
                 <td></td>
                 {% endif %}
                 {% if not user.admin == True %}
-                <td><a href="#">Eliminar</a></td>
-                {#<td><a href="{% url 'deleteUserView' user.id %}">Eliminar</a></td>#}
-                <td><a href="#">Actividades</a></td>
-                {#<td><a href="{% url 'activsUserView' user.id %}">Actividades</a></td>#}
+                <td><a href="{{ url_for('borrar_user', id=user.id) }}">Eliminar</a></td>
+                <td><a href="/actividades/{{ user.id }}">Actividades</a></td>
                 {% else %}
                 <td></td>
                 <td></td>

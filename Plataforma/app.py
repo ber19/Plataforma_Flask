@@ -1,5 +1,5 @@
 from flask import Flask, render_template, redirect, \
-    abort
+    abort, send_from_directory
 from Plataforma import config
 from Plataforma.forms import *
 from flask_sqlalchemy import SQLAlchemy
@@ -7,6 +7,7 @@ from werkzeug.utils import secure_filename
 from flask_login import LoginManager, login_user, logout_user, \
     login_required, current_user
 from Plataforma.utils import ahora
+
 
 app = Flask(__name__)
 app.config.from_object(config)
@@ -42,6 +43,12 @@ def login():
             else:
                 form.username.errors.append("Usuario o contraseña incorrectos")
     return render_template("login.html", form=form)
+
+@app.route("/download/<archivo>")
+@login_required
+def download(archivo):
+    return send_from_directory(app.config["UPLOAD_FOLDER"], archivo)
+
 
 #---------------------------------------------------------------------------------
 @app.route("/admin")
@@ -129,13 +136,76 @@ def cambiar_pass(id):
                 msg = f"La contraseña de {user1.username} se ha cambiado"
             return render_template("cambiar_pass.html", form=form, user=user1, msg=msg)
 
+@app.route("/borrar_user/<id>", methods=["get", "post"])
+@login_required
+def borrar_user(id):
+    from Plataforma.models import Usuarios
+    if not current_user.is_admin():
+        abort(404)
+    else:
+        user1 = Usuarios.query.get(id)
+        if user1 is None:
+            abort(404)
+        elif user1.admin == True:
+            abort(404)
+        else:
+            form = ConfirmForm()
+            if form.validate_on_submit():
+                if form.si.data:
+                    db.session.delete(user1)
+                    db.session.commit()
+                    return redirect("/users")
+                else:
+                    return redirect("/users")
+            return render_template("borrar_user.html", form=form, user=user1)
+
+
 #---------------------------------------------------------------------------------
 @app.route("/usuario")
 @login_required
 def inicio_user():
     if current_user.is_admin():
         abort(404)
-    return render_template("inicio_user.html")
+    return render_template("inicio_user.html", user=current_user)
+
+@app.route("/new_actividad", methods=["get", "post"])
+@login_required
+def new_actividad():
+    if current_user.is_admin():
+        abort(404)
+    else:
+        from Plataforma.models import Actividad
+        form = NewActividadForm()
+        actividades = ("Actividad_Uno", "Actividad_Dos", 
+        "Actividad_Tres", "Actividad_Cuatro", "Actividad_Cinco")
+        form.activ.choices = actividades
+        if form.validate_on_submit():
+            try:
+                archivo111 = form.arch.data
+                nombre = f"{current_user.username}_{form.activ.data}_{ahora()}.rar"
+                nombre_archiv = secure_filename(nombre)
+                archivo111.save(f"{app.config['UPLOAD_FOLDER']}/{nombre_archiv}")
+            except:
+                nombre_archiv = ""
+            activity = Actividad(user_id=current_user.id, activ=form.activ.data, comentarios=form.comentarios.data,
+                archivo=nombre_archiv, creacion=ahora())
+            db.session.add(activity)
+            db.session.commit()
+            return redirect("/usuario")
+        else:
+            return render_template("new_actividad.html", form=form, user=current_user, creacion=ahora())
+
+@app.route("/actividades/<id>")
+@login_required
+def actividades_user(id):
+    from Plataforma.models import Actividad, Usuarios
+    if current_user.is_admin() or str(current_user.id) == id:
+        user1 = Usuarios.query.get(id)
+        activs1 = Actividad.query.filter_by(user_id=id)
+    else:
+        abort(404)
+    return render_template("activs_user.html", activs=activs1, user=user1)
+
 
 #---------------------------------------------------------------------------------
 @app.route("/salir")

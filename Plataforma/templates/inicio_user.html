@@ -1,3 +1,20 @@
 {% extends 'base.html' %}
+{% block title %}Inicio-User{% endblock %}
+{% block style %}
+<link rel="stylesheet" href="{{url_for('static', filename='css/inicios.css')}}">
+{% endblock %}
 
-<h1>INICIO USER</h1>
+{% block content %}
+<div class="container" id="main">
+    <div class="row justify-content-center">
+        <div class="col-4">
+            <a href="/new_actividad" class="btn btn-primary">Nueva actividad</a>
+        </div>
+    </div>
+    <div class="row justify-content-center">
+        <div class="col-4" style="margin-top: .5em;">
+            <a href="/actividades/{{ user.id }}" class="btn btn-primary">Registro de actividades</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

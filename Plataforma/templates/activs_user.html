@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block title %}Actividades{% endblock %}
+{% block style %}
+<link rel="stylesheet" href="{{url_for('static', filename='css/users.css')}}">
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid" id="main">
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th scope="col">Fecha</th>
+                <th scope="col">Actividad</th>
+                <th scope="col">Comentario</th>
+                <th scope="col">Archivo</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for activ in activs %}
+            <tr>
+                <td>{{ activ.creacion }}</td>
+                <td>{{ activ.activ }}</td>
+                <td>{{ activ.comentarios }}</td>
+                <td><a href="/download/{{ activ.archivo }}">{{ activ.archivo }}</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
