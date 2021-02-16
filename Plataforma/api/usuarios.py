@@ -3,7 +3,7 @@ from Plataforma.utils import ahora
 
 urls_api = Blueprint('api', __name__)
 
-@urls_api.route('/api/users')
+@urls_api.route('/api/users', methods=["GET"])
 def get_users():
     from Plataforma.models import Usuarios
     users = [user.serialize() for user in Usuarios.query.all() ]

@@ -8,10 +8,12 @@ from flask_login import LoginManager, login_user, logout_user, \
     login_required, current_user
 from Plataforma.utils import ahora
 from Plataforma.api.usuarios import urls_api
+from Plataforma.api.actividades import api_actividad
 
 
 app = Flask(__name__)
 app.register_blueprint(urls_api)
+app.register_blueprint(api_actividad)
 app.config.from_object(config)
 
 db = SQLAlchemy(app)
@@ -185,6 +187,7 @@ def new_actividad():
         if form.validate_on_submit():
             try:
                 archivo111 = form.arch.data
+                print(archivo111)
                 nombre = f"{current_user.username}_{form.activ.data}_{ahora()}.rar"
                 nombre_archiv = secure_filename(nombre)
                 archivo111.save(f"{app.config['UPLOAD_FOLDER']}/{nombre_archiv}")
