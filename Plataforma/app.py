@@ -1,5 +1,5 @@
 from flask import Flask, render_template, redirect, \
-    abort, send_from_directory, jsonify, request
+    abort, send_from_directory
 from Plataforma import config
 from Plataforma.forms import *
 from flask_sqlalchemy import SQLAlchemy
