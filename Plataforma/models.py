@@ -41,6 +41,18 @@ class Usuarios(db.Model):
     def is_admin(self):
         return self.admin
 
+    def serialize(self):
+        return {
+            "id": self.id,
+            "admin": self.admin,
+            "username": self.username,
+            "nombre": self.nombre,
+            "apellidos": self.apellidos,
+            "email": self.email,
+            "creacion": self.creacion,
+            "creado_por": self.creado_por,
+        }
+
 class Actividad(db.Model):
     __tablename__ = "actividad"
     id = Column(Integer, primary_key=True)
@@ -52,3 +64,12 @@ class Actividad(db.Model):
 
     def __repr__(self):
         return (f'<{self.__class__.__name__}: {self.id}>'.format(self=self))
+
+    def serialize(self):
+        return {
+            "user_id": self.user_id,
+            "activ": self.activ,
+            "comentarios": self.comentarios,
+            "archivo": self.archivo,
+            "creacion": self.creacion
+        }
