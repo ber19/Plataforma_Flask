@@ -7,10 +7,13 @@ from werkzeug.utils import secure_filename
 from flask_login import LoginManager, login_user, logout_user, \
     login_required, current_user
 from Plataforma.utils import ahora
+from Plataforma.api.usuarios import urls_api
 
 
 app = Flask(__name__)
+app.register_blueprint(urls_api)
 app.config.from_object(config)
+
 db = SQLAlchemy(app)
 
 login_manager = LoginManager()
@@ -219,81 +222,3 @@ def salir():
 @app.errorhandler(404)
 def no_encontrado(error):
     return render_template("error.html", error="No se encontro el recurso solicitado")
-
-
-#----------API_REST--------------------------------------------------------------------------------
-@app.route('/api/users', methods=['GET'])
-def get_users():
-    from Plataforma.models import Usuarios
-    users = [user.serialize() for user in Usuarios.query.all() ]
-    return jsonify(users)
-
-@app.route('/api/users/<id>', methods=["GET"])
-def get_user(id):
-    from Plataforma.models import Usuarios
-    user = Usuarios.query.filter_by(id=id).first()
-    if user is None:
-        return jsonify({"Error": "El usuario no existe (GET)"})
-    return jsonify(user.serialize())
-
-@app.route('/api/users', methods=["POST"])
-def crear_user():
-    json = request.get_json(force=True)
-    if json.get('username') is None or json.get('contrasena') is None:
-        return jsonify({'Error': 'Bad request'}), 400
-    from Plataforma.models import Usuarios
-    username = json.get('username')
-    contrasena = json.get('contrasena')
-    nombre = json.get('nombre')
-    apellidos = json.get('apellidos')
-    email = json.get('email')
-    nuevo = Usuarios()
-    nuevo.username = username
-    nuevo.contrasena = contrasena
-    nuevo.nombre = nombre
-    nuevo.apellidos = apellidos
-    nuevo.email = email
-    nuevo.admin = False
-    nuevo.creacion = ahora()
-    # nuevo.creado_por = current_user.username
-    db.session.add(nuevo)
-    db.session.commit()
-    return jsonify(nuevo.serialize())
-
-@app.route('/api/users/<id>', methods=['PUT'])
-def update_user(id):
-    from Plataforma.models import Usuarios
-    user = Usuarios.query.filter_by(id=id).first()
-    if user is None:
-        return jsonify({"Error": "El usuario no existe (PUT)"})
-    json = request.get_json(force=True)
-    nombre = json.get('nombre')
-    apellidos = json.get('apellidos')
-    email = json.get('email')
-    if nombre is None or nombre == "":
-        return jsonify({"Error":"En el nombre"})
-    else:
-        user.nombre = nombre
-    if apellidos is None or apellidos == "":
-        return jsonify({"Error":"En el apellido"})
-    else:
-        user.apellidos = apellidos
-    if email is None or email == "":
-        return jsonify({"Error":"En el email"})
-    else:
-        user.email = email   
-    db.session.commit()
-    return jsonify(user.serialize())
-
-@app.route('/api/users/<id>', methods=["DELETE"])
-def delete_user(id):
-    from Plataforma.models import Usuarios
-    user = Usuarios.query.filter_by(id=id).first()
-    if user is None:
-        return jsonify({"Error": "El usuario no exite (DELETE)"})
-    deleted = user.serialize()
-    db.session.delete(user)
-    db.session.commit()
-    return jsonify(deleted)
-    
-
