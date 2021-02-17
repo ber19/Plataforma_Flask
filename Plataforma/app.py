@@ -40,7 +40,7 @@ def load_user_from_request(request):
         except TypeError:
             pass
         user = Usuarios.query.filter_by(username=username).first()
-        if user.verificar_password(password):
+        if user is not None and user.verificar_password(password):
             return user
     return None
 @login_manager.unauthorized_handler
