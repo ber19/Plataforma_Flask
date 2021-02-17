@@ -45,7 +45,7 @@ def load_user_from_request(request):
     return None
 @login_manager.unauthorized_handler
 def unauth_handler():
-    return jsonify({"Error":"No autorizado"})
+    return jsonify({"Error":"No autorizado"}), 401
 
 #---------------------------------------------------------------------------------
 @app.route("/", methods=["get", "post"])
@@ -182,7 +182,6 @@ def borrar_user(id):
                 else:
                     return redirect("/users")
             return render_template("borrar_user.html", form=form, user=user1)
-
 
 #---------------------------------------------------------------------------------
 @app.route("/usuario")
