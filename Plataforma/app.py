@@ -187,7 +187,6 @@ def new_actividad():
         if form.validate_on_submit():
             try:
                 archivo111 = form.arch.data
-                print(archivo111)
                 nombre = f"{current_user.username}_{form.activ.data}_{ahora()}.rar"
                 nombre_archiv = secure_filename(nombre)
                 archivo111.save(f"{app.config['UPLOAD_FOLDER']}/{nombre_archiv}")
