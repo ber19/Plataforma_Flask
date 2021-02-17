@@ -1,15 +1,18 @@
 from flask import jsonify, request, Blueprint
 from Plataforma.utils import ahora
+from flask_login import login_required
 
 urls_api = Blueprint('api', __name__)
 
 @urls_api.route('/api/users', methods=["GET"])
+@login_required
 def get_users():
     from Plataforma.models import Usuarios
     users = [user.serialize() for user in Usuarios.query.all() ]
     return jsonify(users)
 
 @urls_api.route('/api/users/<id>', methods=["GET"])
+@login_required
 def get_user(id):
     from Plataforma.models import Usuarios
     user = Usuarios.query.filter_by(id=id).first()
@@ -18,6 +21,7 @@ def get_user(id):
     return jsonify(user.serialize())
 
 @urls_api.route('/api/users', methods=["POST"])
+@login_required
 def crear_user():
     from Plataforma.app import db
     json = request.get_json(force=True)
@@ -43,6 +47,7 @@ def crear_user():
     return jsonify(nuevo.serialize())
 
 @urls_api.route('/api/users/<id>', methods=['PUT'])
+@login_required
 def update_user(id):
     from Plataforma.app import db
     from Plataforma.models import Usuarios
@@ -69,6 +74,7 @@ def update_user(id):
     return jsonify(user.serialize())
 
 @urls_api.route('/api/users/<id>', methods=["DELETE"])
+@login_required
 def delete_user(id):
     from Plataforma.app import db
     from Plataforma.models import Usuarios

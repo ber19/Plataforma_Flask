@@ -1,5 +1,5 @@
 from flask import Flask, render_template, redirect, \
-    abort, send_from_directory
+    abort, send_from_directory, jsonify
 from Plataforma import config
 from Plataforma.forms import *
 from flask_sqlalchemy import SQLAlchemy
@@ -9,6 +9,7 @@ from flask_login import LoginManager, login_user, logout_user, \
 from Plataforma.utils import ahora
 from Plataforma.api.usuarios import urls_api
 from Plataforma.api.actividades import api_actividad
+import base64
 
 
 app = Flask(__name__)
@@ -26,6 +27,25 @@ login_manager.login_view = "login"
 def load_user(user_id):
     from Plataforma.models import Usuarios
     return Usuarios.query.get(int(user_id))
+
+@login_manager.request_loader
+def load_user_from_request(request):
+    from Plataforma.models import Usuarios
+    api_key = request.headers.get('Authorization')
+    if api_key:
+        api_key = api_key.replace('Basic ', "", 1)
+        try:
+            api_key = base64.b64decode(api_key).decode('ascii')
+            username,password = api_key.split(":")         
+        except TypeError:
+            pass
+        user = Usuarios.query.filter_by(username=username).first()
+        if user.verificar_password(password):
+            return user
+    return None
+@login_manager.unauthorized_handler
+def unauth_handler():
+    return jsonify({"Error":"No autorizado"})
 
 #---------------------------------------------------------------------------------
 @app.route("/", methods=["get", "post"])
@@ -53,7 +73,6 @@ def login():
 @login_required
 def download(archivo):
     return send_from_directory(app.config["UPLOAD_FOLDER"], archivo)
-
 
 #---------------------------------------------------------------------------------
 @app.route("/admin")
@@ -213,7 +232,6 @@ def actividades_user(id):
     else:
         abort(404)
     return render_template("activs_user.html", activs=activs1, user=user1)
-
 
 #---------------------------------------------------------------------------------
 @app.route("/salir")
