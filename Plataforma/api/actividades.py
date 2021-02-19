@@ -33,19 +33,16 @@ def crear_actividad():
     if not current_user.is_admin():
         from Plataforma.app import db, app
         from Plataforma.models import Actividad
-        json = request.get_json(force=True)
-        activ = json.get('activ')
-        comentarios = json.get('comentarios')
+        user = current_user.id
+        activ = request.form.get('activ')
+        comentarios = request.form.get('comentarios')
         creacion = ahora()
-        archivo = json.get('archivo')
-        ar = open(f"{archivo}", "rb")
-        datos = ar.read()
-        nombre = f"{activ}_{ahora()}.rar"
+        ar = request.files.get('archivo')
+        nombre = f"{current_user.username}_{activ}_{ahora()}.rar"
         nombre_archiv = secure_filename(nombre)
-        f = open(f"{app.config['UPLOAD_FOLDER']}/{nombre_archiv}", "xb")
-        f.write(datos)
+        ar.save(f"{app.config['UPLOAD_FOLDER']}/{nombre_archiv}")
         nueva = Actividad()
-        nueva.user_id = current_user.id
+        nueva.user_id = user
         nueva.activ = activ
         nueva.comentarios = comentarios
         nueva.archivo = nombre_archiv
